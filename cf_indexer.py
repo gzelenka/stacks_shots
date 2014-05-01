@@ -38,6 +38,7 @@ class cf_indexer(object):
                     print o
                     g = o.get()
                     print (len(g) / 1024)
+                    return g
 
 
 
