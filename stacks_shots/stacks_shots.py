@@ -1,7 +1,7 @@
 
 import cf_indexer
 
-from flask import Flask
+from flask import Flask, render_template
 
 cf = cf_indexer.cf_indexer()
 cf.populate_videos()
@@ -9,12 +9,9 @@ cf.populate_videos()
 app = Flask(__name__)
 
 
-
 @app.route("/")
 def hello():
-    print "LOL"
-    print cf.videos
-    return "Hello World!"
+    return render_template("player.htm")
 
 
 @app.route("/video/<string:cont>/<string:name>/<string:size>")
