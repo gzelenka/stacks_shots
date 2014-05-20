@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+<ol class=jams>
+    {{ game }}
+        {% for j in jams|sort %}
+        <li>
+        {{ j }}
+                {% for size in jams[j].sizes %}
+                <a href={{ url_for("launch_player", cont=game, name=j, size=size) }}>{{ size }}</a>
+                {% endfor %}
+
+        </li>
+        {% endfor %}
+        
+    </ol>
+    {% endblock %}
+

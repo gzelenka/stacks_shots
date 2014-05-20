@@ -16,16 +16,32 @@ $(document).ready(function(){
 	$("#jquery_jplayer_1").jPlayer({
 		ready: function () {
 			$(this).jPlayer("setMedia", {
-				title: "Big Buck Bunny",
-                m4v: "{{ url_for('static', filename='test.mp4') }}",
+                title: "{{ game }} {{ jam }} ",
+                m4v: "{{ url }}",
 			});
 		},
 		swfPath: "js",
 		supplied: "m4v",
-		size: {
+        size: {
+            {% if size == "mobile" %}
+			width: "320px",
+			height: "240px",
+            cssClass: "jp-video-240p"
+            {% elif size == "720p" %}
+			width: "1280px",
+			height: "720px",
+            cssClass: "jp-video-720p"
+            {% elif size == "1080p" %}
+			width: "1920px",
+			height: "1080px",
+            cssClass: "jp-video-1080p"
+            {% else %}
 			width: "640px",
 			height: "360px",
-			cssClass: "jp-video-360p"
+            cssClass: "jp-video-360p"
+            {% endif %}
+
+
 		},
 		smoothPlayBar: true,
 		keyEnabled: true,

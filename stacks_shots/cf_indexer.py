@@ -4,6 +4,7 @@ import pyrax.exceptions
 
 import time
 
+logfile = "cloudfiles.log"
 
 pyrax.set_setting("identity_type", "rackspace")
 pyrax.set_setting("region", "IAD")
@@ -11,6 +12,11 @@ pyrax.set_credential_file("rack_auth")
 cf = pyrax.cloudfiles
 
 FILTER_CONTAINERS = ['NeedTranscode', 'RawArchive', 'test']
+
+
+def log(msg):
+    with open(logfile, "a") as of:
+        of.write(msg + '\n')
 
 
 class cf_indexer(object):
@@ -26,20 +32,25 @@ class cf_indexer(object):
                     n, r = f.split('/', 1)
                     r = r.split('.')[0]
                     if n in self.videos[name]:
-                        self.videos[name][n].append(r)
+                        self.videos[name][n]['sizes'].append(r)
                     else:
-                        self.videos[name][n] = [r]
+                        self.videos[name][n] = {'sizes': [r]}
+
+    def get_url(self, cont, name, size):
+        if cont in self.videos:
+            if name in self.videos[cont]:
+                if size in self.videos[cont][name]['sizes']:
+                    o = cf.get_object(cont, name + '/' + size + '.MP4')
+                    u = o.get_temp_url(30)
+                    return u
 
     def get_file(self, cont, name, size):
         if cont in self.videos:
             if name in self.videos[cont]:
-                if size in self.videos[cont][name]:
-                    o = cf.get_object(cont, name + '/' + size + '.mp4')
-                    print o
+                if size in self.videos[cont][name]['sizes']:
+                    o = cf.get_object(cont, name + '/' + size + '.MP4')
                     g = o.get()
-                    print (len(g) / 1024)
                     return g
-
 
 
 if __name__ == '__main__':
