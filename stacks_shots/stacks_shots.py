@@ -1,4 +1,3 @@
-import cStringIO
 import cf_indexer
 
 from flask import Flask, render_template, request, url_for
@@ -18,17 +17,9 @@ def list_games():
     return render_template("bouts.html", bouts=cf.videos)
 
 
-@app.route("/video/<string:cont>/<string:name>/<string:size>")
-def get_video(cont, name, size):
-    print "launching video????"
-    v = cStringIO.StringIO(cf.get_stream(cont, name, size))
-    return v.getvalue()
-
-
 @app.route("/player/<string:cont>/<string:name>/<string:size>")
 def launch_player(cont, name, size):
     print "ROFL %s %s %s" % (cont, name, size)
-    a = cf.get_file(cont, name, size)
     u = cf.get_url(cont, name, size)
     print "launching the player: %s" % u
     return render_template("player.htm", url=u, game=cont, jam=name, size=size)
@@ -37,10 +28,6 @@ def launch_player(cont, name, size):
 @app.route("/game", methods=['GET'])
 def list_jams():
     if request.method == "GET" and 'game' in request.args:
-        print "In list jams"
-        print request.args.get('game')
-        print type(cf.videos[request.args.get('game')])
-        print cf.videos[request.args.get('game')]
         return render_template("game.html", game=request.args.get('game'),
                                jams=cf.videos[request.args.get('game')])
     else:
